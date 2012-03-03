@@ -1,0 +1,19 @@
+mr.sh - mood record
+===================
+
+*This is very first version, it does not do much and probably will be broken for you.*
+
+A simple shell script to record mood.
+
+    mr.sh [1-5] comments here
+
+The data is stored at `$XDG_DATA_HOME/mr`. Use `-l` to show records
+
+    mr.sh -l
+
+License
+-------
+
+This project is licensed under the MIT License.
+
+    Copyright (c) 2012 Yu-Jie Lin
