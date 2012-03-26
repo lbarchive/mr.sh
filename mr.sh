@@ -1,16 +1,4 @@
 #!/bin/bash
-# !!! PLEASE READ !!!
-# This Bash script template IS NOT licensed under the MIT License, but place in
-# the Public Domain. The MIT License text is included because I 99% license my
-# work with it.
-#
-# Things You Need to Change:
-#   3. Edit usage(), parse_options()
-#   4. Write code in main section
-#   5. Remove PLEASE READ section and anything you don't want
-#
-# This Bash script template is made by Yu-Jie Lin.
-# !!!     END     !!!
 # mr.sh - mood record shell script
 # Copyright (c) 2012 Yu-Jie Lin
 # 
@@ -65,14 +53,6 @@ Options:
 "  
 }
 
-# XXX this can be rewritten with an options array, e.g.
-# (
-#   '-o|--option-with-arg'    'help_message' 'OPTION_FLAG'  'option1_handler_function' ...
-#   '-O|--option-without-arg' 'help_message' 'OPTION_FLAG1' 'option2_handler_function' ...
-#   ...
-# )
-# And this way can automatically have help message, etc...
-# However this might become a full-set library
 parse_options() {
   while (( $#>0 )); do
     opt="$1"
