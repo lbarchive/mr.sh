@@ -62,6 +62,9 @@ parse_options() {
       -l|--list)
         SCRIPT_OPT_SET "action" "list"
         ;;
+      --csv)
+        SCRIPT_OPT_SET "action" "csv"
+        ;;
       --no-color)
         SCRIPT_OPT_SET "no-color"
         ;;
@@ -86,6 +89,25 @@ parse_options() {
     esac
     shift
   done
+}
+
+moodbar() {
+  local mood=$1
+  local m=${mood/-/}
+  # FIXME WTF is this? Am I first day coder of Bash?
+  local moods=(
+  "\e[38;5;196m-\e[38;5;203m-\e[38;5;203m-\e[38;5;174m-\e[38;5;181m-\e[0m$m     "
+  " \e[38;5;203m-\e[38;5;203m-\e[38;5;174m-\e[38;5;181m-\e[0m$m     "
+  "  \e[38;5;203m-\e[38;5;174m-\e[38;5;181m-\e[0m$m     "
+  "   \e[38;5;174m-\e[38;5;181m-\e[0m$m     "
+  "    \e[38;5;181m-\e[0m$m     "
+  "     $m     "
+  "     $m\e[38;5;151m+\e[0m    "
+  "     $m\e[38;5;151m+\e[38;5;114m+\e[0m   "
+  "     $m\e[38;5;151m+\e[38;5;114m+\e[38;5;83m+\e[0m  "
+  "     $m\e[38;5;151m+\e[38;5;114m+\e[38;5;83m+\e[38;5;83m+\e[0m "
+  "     $m\e[38;5;151m+\e[38;5;114m+\e[38;5;83m+\e[38;5;83m+\e[38;5;46m+\e[0m")
+  ret_moodbar=${moods[mood+5]}
 }
 
 ###########################
@@ -142,7 +164,22 @@ DATA_FILE="$XDG_DATA_HOME/mr"
 if SCRIPT_OPT "action"; then
   case "$SCRIPT_OPT_VALUE" in
     list)
-      cat "$DATA_FILE"
+      DATE_FMT="%Y-%m-%d %H:%M:%S"
+      DESC_LEN_LIMIT=$(($(tput cols) - 32))
+      while read ts mood desc; do
+        moodbar $mood
+        (( ${#desc} > DESC_LEN_LIMIT )) && desc=${desc::DESC_LEN_LIMIT-3}...
+        printf "%s %b %s\n" "$(date +"$DATE_FMT" -d @$ts)" "$ret_moodbar" "$desc"
+      done < "$DATA_FILE"
+      exit 0
+      ;;
+    csv)
+      DATE_FMT="%Y-%m-%d %H:%M:%S"
+      echo "Date/Time,Mood,Description"
+      while read ts mood desc; do
+        desc=${desc//\"/\"\"}
+        echo "\"$(date +"$DATE_FMT" -d @$ts)\",$mood,\"$desc\""
+      done < "$DATA_FILE"
       exit 0
       ;;
   esac
