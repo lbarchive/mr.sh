@@ -72,6 +72,9 @@ parse_options() {
         usage
         exit 0
         ;;
+      -[1-5])
+        SCRIPT_ARGS=("${SCRIPT_ARGS[@]}" "$opt")
+        ;;
       -*)
         echo "$SCRIPT_NAME: invalid option -- '$opt'" >&2
         echo "Try \`$SCRIPT_NAME --help' for more information." >&2
